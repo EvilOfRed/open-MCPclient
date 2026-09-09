@@ -1,0 +1,24 @@
+# Python-generated files
+__pycache__/
+*.py[oc]
+build/
+dist/
+wheels/
+*.egg-info
+
+# Virtual environments
+.venv
+.env
+
+# private file
+chat_histories/
+server/*
+!server/other_server.py
+config/host.yaml
+resources
+output
+jsx
+comfyui_workflow
+backup
+bash_script
+test.py

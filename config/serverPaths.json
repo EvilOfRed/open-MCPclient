@@ -1,0 +1,35 @@
+{
+  "mcpServers": {
+    "networkServer": {
+      "type": "stdio",
+      "command": "C:/mcp_server/.venv/Scripts/python.exe",
+      "args": ["C:/mcp_server/server/network_server.py"]
+    },
+    "otherServer": {
+      "type": "stdio",
+      "command": "C:/mcp_server/.venv/Scripts/python.exe",
+      "args": ["C:/mcp_server/server/other_server.py"]
+    },
+    "psServer": {
+      "type": "stdio",
+      "command": "C:/mcp_server/.venv/Scripts/python.exe",
+      "args": ["C:/mcp_server/server/ps_server.py"]
+    },
+    "fileServer": {
+      "type": "stdio",
+      "command": "C:/mcp_server/.venv/Scripts/python.exe",
+      "args": ["C:/mcp_server/server/file_server.py"]
+    },
+    "timeServer": {
+      "type": "stdio",
+      "command": "C:/mcp_server/.venv/Scripts/python.exe",
+      "args": ["C:/mcp_server/server/time_server.py"]
+    },
+    "yoloServer": {
+      "type": "stdio",
+      "command": "C:/Comic/.venv/Scripts/python.exe",
+      "args": ["C:/mcp_server/server/yolo_server.py"]
+    }
+
+  }
+}
