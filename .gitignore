@@ -22,3 +22,6 @@ comfyui_workflow
 backup
 bash_script
 test.py
+
+#cache
+unsloth_compiled_cache/
