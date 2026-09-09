@@ -345,6 +345,12 @@ class MCPClient:
         for name, server in servers["mcpServers"].items():
             if server['type']=='stdio':
                 try:
+                    if not os.path.exists(server['args'][0]):
+                        print(f"{name}服务不存在")
+                        continue
+                    if not os.path.exists(server['command']):
+                        print(f"{name}命令不存在")
+                        continue
                     read, write = await stack.enter_async_context(stdio_client(StdioServerParameters(command=server['command'], args=server['args'])))
                     session = await stack.enter_async_context(ClientSession(read, write))
                 except Exception as e:
