@@ -284,7 +284,6 @@ class MCPClient:
         server = await asyncio.start_server(
             self.handle_rpc_client, host, port
         )
-        print(f"RPC server listening on {host}:{port}")
         try:
             async with server:
                 await server.serve_forever()

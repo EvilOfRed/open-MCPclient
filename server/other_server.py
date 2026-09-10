@@ -58,7 +58,6 @@ def rpc_call(method:Annotated[str,Field(description="要调用的方法名字")]
     if args is None:
         args = []
     request = {'method': method, 'args': args}
-    json_str = json.dumps(request) + '\n'
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
         s.connect((host, port))
         s.sendall((json.dumps(request) + '\n').encode())
