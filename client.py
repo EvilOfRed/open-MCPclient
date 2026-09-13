@@ -9,7 +9,7 @@ from datetime import datetime
 from mcp import ClientSession
 from mcp.client.stdio import stdio_client, StdioServerParameters
 from openai import AsyncOpenAI
-from typing import List, Tuple, Optional, Dict
+from typing import List, Tuple, Optional, Dict,Any
 import inspect
 from contextlib import AsyncExitStack
 import uuid
@@ -31,8 +31,9 @@ class MCPClient:
         self.messagesId=None
         self.layer=0
         self.preserve_thinking=True  
+        self.preserve_messagesId=None
 
-    async def _stream_response(self, stream) -> Tuple[str, Optional[List[Dict]]]:
+    async def _stream_response(self, stream) -> Tuple[str, Optional[List[Dict]], str]:
         """
         处理流式响应，实时打印内容，返回完整文本和工具调用信息（如果有）
         """
@@ -150,11 +151,9 @@ class MCPClient:
 
 
     
-    async def process_query(self, query: str, base64_image: str=None,image_mime_type: str=None) -> int:
+    async def process_query(self, query: str, base64_image: str|None=None,image_mime_type: str|None=None) -> str:
         """Process a query using Openai and available tools"""
         self.layer+=1
-        with open("run.log", "a", encoding="utf-8") as f: 
-            f.write(f"层数：{self.layer}\n")
         print(f'\n当前层数：{self.layer}')
         dir_path = Path("chat_histories")
         if self.messagesId is not None:
@@ -166,7 +165,7 @@ class MCPClient:
             #写入系统提示符
             with open("C:/mcp_server/sysprompt/ServiceCode.md", 'r', encoding='utf-8') as file:
                         sysPrompt=file.read()
-            messages=[{
+            messages:List[Dict[str, Any]]=[{
             "role":"system",
             "content": sysPrompt
             }]
@@ -208,7 +207,7 @@ class MCPClient:
                 "reasoning_effort": "low",
             }
             # 仅当模型为 deepseek-v4-flash-vision-exp 时添加额外参数
-            if self.model == "deepseek-v4-flash-vision-exp":
+            if self.model == "deepseek-flash":
                 create_params["extra_body"] = {"thinking": {"type": "enabled"}}
             stream = await self.llm_client.chat.completions.create(
                 **create_params
@@ -331,11 +330,23 @@ class MCPClient:
     async def geTConversationLoopRunningLayer(self)->int:
         return self.layer
 
-    async def getMassagesId(self)->int:
-        return self.messagesId
+    async def getMassagesId(self)->str:
+        return str(self.messagesId)
 
     async def clearMassagesId(self)->None:
         self.messagesId=None
+
+    async def preserveChat(self):
+        if self.preserve_messagesId is not None:
+            raise RuntimeError("已有会话被锁定")
+        self.preserve_messagesId=self.messagesId
+
+    async def reloadChat(self):
+        if self.preserve_messagesId is None:
+            raise RuntimeError("无会话被锁定")
+        self.messagesId=self.preserve_messagesId
+        self.preserve_messagesId=None
+
 
 
     async def initSessions(self,stack:AsyncExitStack)->None:
@@ -343,18 +354,19 @@ class MCPClient:
             servers = json.load(f)
         for name, server in servers["mcpServers"].items():
             if server['type']=='stdio':
+                if not os.path.exists(server['args'][0]):
+                    print(f"{name}服务不存在")
+                    continue
+                if not os.path.exists(server['command']):
+                    print(f"{name}命令不存在")
+                    continue
                 try:
-                    if not os.path.exists(server['args'][0]):
-                        print(f"{name}服务不存在")
-                        continue
-                    if not os.path.exists(server['command']):
-                        print(f"{name}命令不存在")
-                        continue
                     read, write = await stack.enter_async_context(stdio_client(StdioServerParameters(command=server['command'], args=server['args'])))
                     session = await stack.enter_async_context(ClientSession(read, write))
+                    await session.initialize()
                 except Exception as e:
                     print(f"服务 [{name}] 初始化失败: {type(e).__name__}: {e}")
-                await session.initialize()
+                    continue
                 tool_list = await session.list_tools()
                 self.sessions.append(session)
                 index = len(self.sessions) - 1   
@@ -393,4 +405,14 @@ if __name__ == "__main__":
         config_path=r"C:\mcp_server\config\serverPaths.json",
         model=os.environ.get("MCP_MODEL")
     )
-    asyncio.run(mcpClient.start())
+    try:
+        asyncio.run(mcpClient.start())
+    except KeyboardInterrupt:
+        # 用户主动 Ctrl+C，静默退出
+        pass
+    except asyncio.CancelledError:
+        pass
+    finally:
+        print("\n已退出")
+        # 强制退出，避免残留的非守护线程（input 线程）拖住解释器
+        os._exit(0)

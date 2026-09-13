@@ -28,8 +28,12 @@
     "yoloServer": {
       "type": "stdio",
       "command": "C:/Comic/.venv/Scripts/python.exe",
-      "args": ["C:/mcp_server/server/yolo_server.py"]
+      "args": ["C:/Comic/yolo_server.py"]
+    },
+    "ttsServer": {
+      "type": "stdio",
+      "command": "C:/CV/.venv/Scripts/python.exe",
+      "args": ["C:/CV/tts_server.py"]
     }
-
   }
 }

@@ -1,0 +1,13 @@
+进入方法。推理开始。
+======================================================================
+[2026-09-12T23:38:52] 读取核查流程.md 失败
+  path=C:\Comic\resources\核查流程.md
+  exists=True
+  parent_exists=True
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Comic\yolo_server.py", line 65, in start_translate_comic
+    sendRequest(ckp+"\n请严格遵守上述规则检查上述json的正确性,并经最终结果写入"+output_dir+"/translation.json")
+                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~
+TypeError: can only concatenate str (not "WindowsPath") to str
+
