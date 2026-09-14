@@ -24,15 +24,16 @@
 
 ### 1. 安装依赖
 
-bash
+```bash
 pip install mcp openai python-dotenv mcp_rpc_utils
+```
 
 ### 2. 配置环境变量
 
 在项目根目录创建 `.env` 文件，填入以下内容：
 
 env
-MCP_BASE_URL=https://api.openai.com/v1
+MCP_BASE_URL=你的模型基础路径
 MCP_API_KEY=你的API密钥
 MCP_MODEL=你的模型名称
 
@@ -47,15 +48,15 @@ MCP_MODEL=你的模型名称
 
 直接运行 `client.py`：
 
-bash
+```bash
 python client.py
-
+```
 
 
 ## 配置 MCP 服务端
 在 config/serverPaths.json（路径可修改）中定义服务端列表，例如：
 
-json
+```json
 {
   "mcpServers": {
     "filesystem": {
@@ -70,5 +71,6 @@ json
     }
   }
 }
+```
 *尚不支持其它命令的启动形式。*
 
