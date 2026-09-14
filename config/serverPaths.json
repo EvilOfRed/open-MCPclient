@@ -10,10 +10,10 @@
       "command": "C:/mcp_server/.venv/Scripts/python.exe",
       "args": ["C:/mcp_server/server/other_server.py"]
     },
-    "psServer": {
+    "imageServer": {
       "type": "stdio",
       "command": "C:/mcp_server/.venv/Scripts/python.exe",
-      "args": ["C:/mcp_server/server/ps_server.py"]
+      "args": ["C:/image-studio-mcp/image_server.py"]
     },
     "fileServer": {
       "type": "stdio",

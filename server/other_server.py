@@ -7,7 +7,7 @@ import json
 from typing import Annotated,List
 from pydantic import Field
 import threading
-from rpc_utils import  sendRequest, clearHistory
+from mcp_rpc_utils import  sendRequest, clearHistory
 
 mcp = MCPServer("OTHER_MCP")
 
