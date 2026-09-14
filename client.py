@@ -276,7 +276,6 @@ class MCPClient:
                 await self.process_query(query)
             except Exception as e:
                 print(f"\nError: {e}")
-        # await self.process_query(session_list, "打开C:/flux/picture文件夹")
 
 
     async def rpc_server(self, host='127.0.0.1', port=9999):
